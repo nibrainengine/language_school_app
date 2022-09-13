@@ -1,31 +1,67 @@
 package com.anietie.language_school_app.service;
 
+import com.anietie.language_school_app.DTO.StudentDTO;
+import com.anietie.language_school_app.model.LogIn;
+import com.anietie.language_school_app.model.Role;
 import com.anietie.language_school_app.model.Student;
+import com.anietie.language_school_app.repository.LogInRepo;
+import com.anietie.language_school_app.repository.RoleRepo;
 import com.anietie.language_school_app.repository.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+
 
 @Service
 public class StudentService {
 
-    private StudentRepo studentRepo;
+    private final StudentRepo studentRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleRepo roleRepo;
+    private final LogInRepo logInRepo;
 
     @Autowired
-    public StudentService(StudentRepo studentRepo) {
+    public StudentService(StudentRepo studentRepo,
+                          PasswordEncoder passwordEncoder,
+                          RoleRepo roleRepo,
+                          LogInRepo logInRepo) {
         this.studentRepo = studentRepo;
+        this.passwordEncoder = passwordEncoder;
+        this.roleRepo = roleRepo;
+        this.logInRepo = logInRepo;
     }
 
-    public Student registerStudent(Student student) throws Exception{
+    public Student registerStudent(StudentDTO studentDTO) throws Exception{
         try{
-            boolean exists = studentRepo.findByName(student.getName()).isPresent();
+            boolean exists = studentRepo.findByName(studentDTO.getName()).isPresent();
             if(!exists) {
-                Student newStudent = studentRepo.save(student);
-                return newStudent;
+                Student newStudent = new Student();
+                LogIn newLogin = new LogIn();
+                newStudent.setName(studentDTO.getName());
+                System.out.println(newStudent.getName());
+                newStudent.setAddress(studentDTO.getAddress());
+                newStudent.setPhone(studentDTO.getPhone());
+                newStudent.setImageUrl(studentDTO.getImageUrl());
+                newStudent.setEmail(studentDTO.getEmail());
+                newStudent.setDob(studentDTO.getDob());
+                System.out.println(newStudent.getEmail());
+                newLogin.setPassword(passwordEncoder.encode(studentDTO.getPassword()));
+                newLogin.setUsername(studentDTO.getUsername());
+                setStudentRole(newLogin);
+                System.out.println(newLogin.getPassword());
+                System.out.println(List.of(newStudent));
+                LogIn logIn = logInRepo.save(newLogin);
+                System.out.println("here is it");
+                newStudent.setLogIn(newLogin);
+                return studentRepo.save(newStudent);
             }
             throw new DuplicateKeyException("student already exists!");
         }
@@ -33,9 +69,15 @@ public class StudentService {
             throw new DuplicateKeyException(e.getMessage());
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new Exception(e.getMessage());
         }
 
+    }
+
+    private void setStudentRole(LogIn logIn) {
+        Role role = roleRepo.findByName("student").get();
+        logIn.setRole(Collections.singleton(role));
     }
 
     public Student getStudentById(Long id) throws Exception {

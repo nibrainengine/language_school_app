@@ -1,5 +1,6 @@
 package com.anietie.language_school_app.controller;
 
+import com.anietie.language_school_app.DTO.StudentDTO;
 import com.anietie.language_school_app.model.Student;
 import com.anietie.language_school_app.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,9 @@ public class StudentController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Student> registerStudent(@RequestBody Student student) {
+    public ResponseEntity<Student> registerStudent(@RequestBody StudentDTO studentDTO) {
         try {
-            Student newStudent = studentService.registerStudent(student);
+            Student newStudent = studentService.registerStudent(studentDTO);
             return new ResponseEntity<>(newStudent, HttpStatus.CREATED);
         }
         catch (DuplicateKeyException ed) {
@@ -36,7 +37,6 @@ public class StudentController {
         }
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-
         }
 
     }

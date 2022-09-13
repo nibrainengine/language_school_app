@@ -1,5 +1,7 @@
 package com.anietie.language_school_app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -29,18 +31,29 @@ public class Student implements Serializable {
     private String level;
     private LocalDate dob;
     private String studentNumber;
+    private String email;
     @Transient
     private int age;
 
     @OneToMany
     private List<Results> result;
 
+    @OneToOne
+    @JoinColumn
+    private LogIn logIn;
+
+    public LogIn getLogIn() {
+        return logIn;
+    }
+
 
     public Student() {
     }
 
-    public Student(String name, String address, String phone, String imageUrl, String level, LocalDate dob, String studentNumber) {
+    public Student(String name, String address, String phone, String imageUrl, String level,
+                   LocalDate dob, String studentNumber, String email) {
         this.name = name;
+        this.email = email;
         this.address = address;
         this.phone = phone;
         this.imageUrl = imageUrl;
@@ -48,6 +61,20 @@ public class Student implements Serializable {
         this.dob = dob;
         this.studentNumber = studentNumber;
         this.result = new ArrayList<>();
+        this.logIn = new LogIn();
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setLogIn(LogIn logIn) {
+        this.logIn = logIn;
     }
 
     public int getAge() {
@@ -141,8 +168,10 @@ public class Student implements Serializable {
                 ", level='" + level + '\'' +
                 ", dob=" + dob +
                 ", studentNumber='" + studentNumber + '\'' +
+                ", email='" + email + '\'' +
                 ", age=" + age +
                 ", result=" + result +
+                ", logIn=" + logIn +
                 '}';
     }
 }
