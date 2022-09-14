@@ -23,9 +23,11 @@ public class LogInService  {
 
     public String signIn(LogInDTO logInDTO) throws Exception {
         try{
+            System.out.println(logInDTO.getUsernameOrEmail() + " "+ logInDTO.getPassword());
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             logInDTO.getUsernameOrEmail(), logInDTO.getPassword()));
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return "User signed-in successful!.";
         }

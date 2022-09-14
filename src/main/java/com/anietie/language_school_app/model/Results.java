@@ -16,18 +16,32 @@ public class Results implements Serializable {
     private int examScore;
     private LocalDate examDate;
     @ManyToOne
+    @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
-    @OneToMany
-    private List<Course> course;
+    @OneToOne
+    @JoinColumn(name="course_id")
+    private Course course;
 
     public Results() {
     }
 
-    public Results(int examScore, LocalDate examDate) {
+    public Results(int examScore, LocalDate examDate,
+                   Student student, Course course) {
         this.examScore = examScore;
         this.examDate = examDate;
-        this.student = new Student();
-        this.course = new ArrayList<>();
+        this.student = student;
+        this.course = course;
+    }
+
+    @Override
+    public String toString() {
+        return "Results{" +
+                "id=" + id +
+                ", examScore=" + examScore +
+                ", examDate=" + examDate +
+                ", student=" + student +
+                ", course=" + course +
+                '}';
     }
 
     public Long getId() {
@@ -62,22 +76,11 @@ public class Results implements Serializable {
         this.student = student;
     }
 
-    public List<Course> getCourse() {
+    public Course getCourse() {
         return course;
     }
 
-    public void setCourse(List<Course> course) {
+    public void setCourse(Course course) {
         this.course = course;
-    }
-
-    @Override
-    public String toString() {
-        return "Results{" +
-                "id=" + id +
-                ", examScore=" + examScore +
-                ", examDate=" + examDate +
-                ", student=" + student +
-                ", course=" + course +
-                '}';
     }
 }

@@ -35,11 +35,11 @@ public class Student implements Serializable {
     @Transient
     private int age;
 
-    @OneToMany
+    @OneToMany(mappedBy = "student")
     private List<Results> result;
 
     @OneToOne
-    @JoinColumn
+    @JoinColumn(name = "login_id_id")
     private LogIn logIn;
 
     public LogIn getLogIn() {
@@ -50,47 +50,18 @@ public class Student implements Serializable {
     public Student() {
     }
 
-    public Student(String name, String address, String phone, String imageUrl, String level,
-                   LocalDate dob, String studentNumber, String email) {
+    public Student(String name, String address, String phone, String imageUrl, String level, LocalDate dob, String studentNumber, String email, int age, List<Results> result, LogIn logIn) {
         this.name = name;
-        this.email = email;
         this.address = address;
         this.phone = phone;
         this.imageUrl = imageUrl;
         this.level = level;
         this.dob = dob;
         this.studentNumber = studentNumber;
-        this.result = new ArrayList<>();
-        this.logIn = new LogIn();
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setLogIn(LogIn logIn) {
-        this.logIn = logIn;
-    }
-
-    public int getAge() {
-        return Period.between(this.dob, LocalDate.now()).getYears();
-    }
-
-    public void setAge(int age) {
         this.age = age;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+        this.result = result;
+        this.logIn = logIn;
     }
 
     public String getName() {
@@ -109,30 +80,6 @@ public class Student implements Serializable {
         this.address = address;
     }
 
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
-    public LocalDate getDob() {
-        return dob;
-    }
-
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
-
-    public List<Results> getResult() {
-        return result;
-    }
-
-    public void setResult(List<Results> result) {
-        this.result = result;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -149,12 +96,56 @@ public class Student implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public LocalDate getDob() {
+        return dob;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
     public String getStudentNumber() {
         return studentNumber;
     }
 
     public void setStudentNumber(String studentNumber) {
         this.studentNumber = studentNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getAge() {
+        return Period.between(dob, LocalDate.now()).getYears();
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public List<Results> getResult() {
+        return result;
+    }
+
+    public void setResult(List<Results> result) {
+        this.result = result;
+    }
+
+    public void setLogIn(LogIn logIn) {
+        this.logIn = logIn;
     }
 
     @Override

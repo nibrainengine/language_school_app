@@ -21,12 +21,16 @@ public class Course implements Serializable {
     private String type;
     private String level;
 
+    @OneToOne(mappedBy = "course")
+    private Results results;
+
     public Course() {
     }
 
-    public Course(String type, String level) {
+    public Course(String type, String level, Results results) {
         this.type = type;
         this.level = level;
+        this.results = results;
     }
 
     public Long getId() {
@@ -51,5 +55,23 @@ public class Course implements Serializable {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    public Results getResults() {
+        return results;
+    }
+
+    public void setResults(Results results) {
+        this.results = results;
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                ", level='" + level + '\'' +
+                ", results=" + results +
+                '}';
     }
 }

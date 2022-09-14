@@ -60,7 +60,7 @@ public class StudentService {
                 System.out.println(List.of(newStudent));
                 LogIn logIn = logInRepo.save(newLogin);
                 System.out.println("here is it");
-                newStudent.setLogIn(newLogin);
+                newStudent.setLogIn(logIn);
                 return studentRepo.save(newStudent);
             }
             throw new DuplicateKeyException("student already exists!");
