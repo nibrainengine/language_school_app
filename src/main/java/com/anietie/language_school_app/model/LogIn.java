@@ -2,11 +2,15 @@ package com.anietie.language_school_app.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "log_in")
 public class LogIn {
@@ -28,6 +32,17 @@ public class LogIn {
     private Student student;
 
     public LogIn() {
+    }
+
+    @Override
+    public String toString() {
+        return "LogIn{" +
+                "logInId=" + logInId +
+                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", role=" + role +
+                ", student=" + student +
+                '}';
     }
 }
 

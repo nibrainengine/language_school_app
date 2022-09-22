@@ -3,6 +3,7 @@ package com.anietie.language_school_app.DTO;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 public class StudentDTO {
@@ -16,4 +17,5 @@ public class StudentDTO {
     private String email;
     private String password;
     private String username;
+    private Set<String> role;
 }

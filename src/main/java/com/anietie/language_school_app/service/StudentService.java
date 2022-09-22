@@ -1,6 +1,7 @@
 package com.anietie.language_school_app.service;
 
 import com.anietie.language_school_app.DTO.StudentDTO;
+import com.anietie.language_school_app.model.ERole;
 import com.anietie.language_school_app.model.LogIn;
 import com.anietie.language_school_app.model.Role;
 import com.anietie.language_school_app.model.Student;
@@ -14,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -39,27 +37,29 @@ public class StudentService {
         this.logInRepo = logInRepo;
     }
 
+    @Transactional
     public Student registerStudent(StudentDTO studentDTO) throws Exception{
         try{
-            boolean exists = studentRepo.findByName(studentDTO.getName()).isPresent();
-            if(!exists) {
+            boolean usernameExists = logInRepo.existsByUsername(studentDTO.getUsername());
+            boolean emailExists = studentRepo.existsByEmail(studentDTO.getEmail());
+            if(!(usernameExists || emailExists)) {
                 Student newStudent = new Student();
                 LogIn newLogin = new LogIn();
                 newStudent.setName(studentDTO.getName());
-                System.out.println(newStudent.getName());
+//                System.out.println(newStudent.getName());
                 newStudent.setAddress(studentDTO.getAddress());
                 newStudent.setPhone(studentDTO.getPhone());
                 newStudent.setImageUrl(studentDTO.getImageUrl());
                 newStudent.setEmail(studentDTO.getEmail());
                 newStudent.setDob(studentDTO.getDob());
-                System.out.println(newStudent.getEmail());
+//                System.out.println(newStudent.getEmail());
                 newLogin.setPassword(passwordEncoder.encode(studentDTO.getPassword()));
                 newLogin.setUsername(studentDTO.getUsername());
-                setStudentRole(newLogin);
-                System.out.println(newLogin.getPassword());
-                System.out.println(List.of(newStudent));
+                setStudentRole(studentDTO.getRole(), newLogin);
+//                System.out.println(newLogin.getPassword());
+//                System.out.println(List.of(newStudent));
                 LogIn logIn = logInRepo.save(newLogin);
-                System.out.println("here is it");
+//                System.out.println("here is it");
                 newStudent.setLogIn(logIn);
                 return studentRepo.save(newStudent);
             }
@@ -75,9 +75,34 @@ public class StudentService {
 
     }
 
-    private void setStudentRole(LogIn logIn) {
-        Role role = roleRepo.findByName("student").get();
-        logIn.setRole(Collections.singleton(role));
+    private void setStudentRole(Set<String> strRoles, LogIn logIn) {
+        Set<Role> role = new HashSet<>();
+        if(strRoles == null) {
+            Role role1 = roleRepo.findByName(ERole.ROLE_USER).orElseThrow(() -> new RuntimeException(
+                    "Role is not available"));
+            role.add(role1);
+        }
+        else {
+            for(String roleSwitch : strRoles) {
+                switch (roleSwitch) {
+                    case "admin":
+                        Role role1 = roleRepo.findByName(ERole.ROLE_ADMIN).orElseThrow(
+                                () -> new RuntimeException("Role not found"));
+                        role.add(role1);
+                        break;
+                    case "mod":
+                        role1 = roleRepo.findByName(ERole.ROLE_MODERATOR).orElseThrow(
+                                () -> new RuntimeException("Role not found"));
+                        role.add(role1);
+                        break;
+                    default:
+                        role1 = roleRepo.findByName(ERole.ROLE_USER).orElseThrow(
+                                () -> new RuntimeException("Role not found"));
+                        role.add(role1);
+                }
+            }
+        }
+        logIn.setRole(role);
     }
 
     public Student getStudentById(Long id) throws Exception {

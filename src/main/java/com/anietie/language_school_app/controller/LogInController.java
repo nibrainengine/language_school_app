@@ -1,5 +1,6 @@
 package com.anietie.language_school_app.controller;
 
+import com.anietie.language_school_app.DTO.JwtResponse;
 import com.anietie.language_school_app.DTO.LogInDTO;
 import com.anietie.language_school_app.service.LogInService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,10 @@ public class LogInController {
     }
 
     @PostMapping(path = "/signIn")
-    public ResponseEntity<String> signIn(@RequestBody LogInDTO logInDTO ) {
+    public ResponseEntity<?> signIn(@RequestBody LogInDTO logInDTO ) {
         try {
-            String AuthenticateResponse = logInService.signIn(logInDTO);
+            JwtResponse AuthenticateResponse = logInService.signIn(logInDTO);
+            System.out.println("here4");
             return new ResponseEntity<>(AuthenticateResponse, HttpStatus.OK);
         }
         catch(Exception e) {
