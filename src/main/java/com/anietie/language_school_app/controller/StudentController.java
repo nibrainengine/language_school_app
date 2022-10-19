@@ -7,11 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -42,6 +40,7 @@ public class StudentController {
     }
 
     @GetMapping("/get/{studentId}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<Student> getStudentStudentById(@PathVariable("studentId") Long id) {
         try {
             Student outputStudent = studentService.getStudentById(id);
@@ -54,6 +53,7 @@ public class StudentController {
     }
 
     @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Student>> getAllStudent() {
         try {
             List<Student> allStudent = studentService.getStudent();
@@ -65,6 +65,7 @@ public class StudentController {
     }
 
     @PutMapping("/update/{studentId}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<Student> updateStudent(
             @PathVariable("studentId") Long id,
             @RequestParam(required = false) String name,
@@ -85,6 +86,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/delete/{studentId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteStudent(@PathVariable("studentId") Long studentId) {
         try {
             String deleteResponse = studentService.deletestudent(studentId);

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class CourseController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<Course> registerCourse(@RequestBody Course course) {
         try {
             Course newCourse = courseService.registerNewCourse(course);
@@ -36,6 +38,7 @@ public class CourseController {
     }
 
     @GetMapping("/allcourses")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<List<Course>> getAllCourses() {
         try{
             List<Course> allCourses =  courseService.getAllCourses();
@@ -47,6 +50,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/delete/{courseId}")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<String> deleteCourse(@PathVariable("courseId") Long courseId) {
         try {
             String deleteResponse = courseService.deleteCourse(courseId);
