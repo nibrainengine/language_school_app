@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                bat 'docker build -t nibrain/languageApp:latest .'
+                bat 'docker build -t nibrain/languageapp:latest .'
             }
         }
         stage('Login') {
@@ -23,7 +23,7 @@ pipeline {
         stage('Push to Heroku registry') {
             steps {
                 bat '''
-                            docker tag nibrain/languageApp:latest registry.heroku.com/$APP_NAME/web
+                            docker tag nibrain/languageapp:latest registry.heroku.com/$APP_NAME/web
                             docker push registry.heroku.com/$APP_NAME/web
                     '''
             }
