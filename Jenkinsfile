@@ -12,17 +12,17 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                bat 'docker build -t nibrain/languageapp:latest .'
+                sh 'docker build -t nibrain/languageapp:latest .'
             }
         }
         stage('Login') {
             steps {
-                bat 'echo HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com'
+                sh 'echo HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com'
             }
         }
         stage('Push to Heroku registry') {
             steps {
-                bat '''
+                sh '''
                             docker tag nibrain/languageapp:latest registry.heroku.com/$APP_NAME/web
                             docker push registry.heroku.com/$APP_NAME/web
                     '''
@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Release the image') {
             steps {
-                bat '''
+                sh '''
                              heroku.container:release web --app=$APP_NAME
                          '''
             }
@@ -38,7 +38,7 @@ pipeline {
     }
     post {
         always {
-            bat 'docker logout'
+            sh 'docker logout'
         }
     }
 }
